@@ -1211,17 +1211,17 @@
     /* ──────────────────────────────────────────────
        CONFIG
     ────────────────────────────────────────────── */
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxbAbDQachLEnw2EQBX2zdYOFuUouF0du1YELCWAcxDV3mPx9L2A38pK6Tu65dRTZLF/exec'; // <-- Paste your deployed GAS URL here
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzr96ZJblP-mMIcu_azD1SdkgracSKqYv-hY-WQq2feAlBiXtAGxqYQPb-8h_M7_Ayr/exec'; // <-- Paste your deployed GAS URL here
 
     // Geofencing config: set your office coordinates & radius (meters)
-    const OFFICE_LAT    = -5.395024;  // Latitude kantor
-    const OFFICE_LON    = 105.220446; // Longitude kantor
-    const GEOFENCE_RADIUS = 100;      // Radius dalam meter
+    const OFFICE_LAT    = -5.183102;  // Latitude kantor
+    const OFFICE_LON    = 119.414654; // Longitude kantor
+    const GEOFENCE_RADIUS = 200;      // Radius dalam meter
 
     // Jam kerja standar (untuk deteksi telat/lembur)
     const JAM_MASUK  = '08:15'; // Format HH:mm
     const JAM_PULANG = '17:00';
-    const TOLERANSI_MENIT = 45; // Toleransi keterlambatan
+    const TOLERANSI_MENIT = 75; // Toleransi keterlambatan
 
     /* ──────────────────────────────────────────────
        STATE
@@ -1284,7 +1284,7 @@
        WEEKEND CHECK HELPER
     ────────────────────────────────────────────── */
     function isTodayWeekend() {
-      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
       return wib.getDay() === 0 || wib.getDay() === 6; // 0 = Minggu, 6 = Sabtu
     }
 
@@ -1525,7 +1525,7 @@
 
     function updateClock() {
       const now = new Date();
-      const opts = { timeZone: 'Asia/Jakarta', hour12: false };
+      const opts = { timeZone: 'Asia/Makassar', hour12: false };
       const H = now.toLocaleString('id-ID', { ...opts, hour: '2-digit' }).padStart(2, '0');
       const M = now.toLocaleString('id-ID', { ...opts, minute: '2-digit' }).padStart(2, '0');
       const S = now.toLocaleString('id-ID', { ...opts, second: '2-digit' }).padStart(2, '0');
@@ -1534,7 +1534,7 @@
       if (clockEl) clockEl.textContent = `${H}:${M}:${S}`;
       const dateEl = document.getElementById('clock-date');
       if (dateEl) dateEl.textContent = now.toLocaleDateString('id-ID', {
-        timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        timeZone: 'Asia/Makassar', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
       });
     }
 
@@ -1817,7 +1817,7 @@
 
         if (res.success) {
           const timeStr = res.timestamp ? res.timestamp.substring(11, 19) : '--:--:--';
-          showToast(res.message + ' (' + timeStr + ' WIB)' + (!isInRadius ? ' ⚠ Diluar Kantor' : ''), 'success');
+          showToast(res.message + ' (' + timeStr + ' WITA)' + (!isInRadius ? ' ⚠ Diluar Kantor' : ''), 'success');
           updateStatusDisplay(tipe, timeStr);
         } else {
           showToast(res.message, 'error');
@@ -1832,9 +1832,9 @@
 
     function updateStatusDisplay(tipe, timeStr) {
       if (tipe === 'Check-In') {
-        document.getElementById('status-checkin').textContent = timeStr + ' WIB';
+        document.getElementById('status-checkin').textContent = timeStr + ' WITA';
       } else {
-        document.getElementById('status-checkout').textContent = timeStr + ' WIB';
+        document.getElementById('status-checkout').textContent = timeStr + ' WITA';
       }
     }
 
@@ -1845,8 +1845,8 @@
       try {
         const res = await apiCall({ action: 'getMyTodayStatus', id_karyawan: currentUser.id_karyawan });
         if (res.success && res.checkin) {
-          document.getElementById('status-checkin').textContent = res.checkin + ' WIB';
-          if (res.checkout) document.getElementById('status-checkout').textContent = res.checkout + ' WIB';
+          document.getElementById('status-checkin').textContent = res.checkin + ' WITA';
+          if (res.checkout) document.getElementById('status-checkout').textContent = res.checkout + ' WITA';
         }
       } catch (e) { /* silent */ }
     }
@@ -2207,7 +2207,7 @@
     }
 
     // Helper: normalisasi format tanggal supaya cocok dengan <input type="date"> (YYYY-MM-DD).
-    // Backend bisa kirim format Date object string ("Wed Jun 17 2026 00:00:00 GMT+0700"),
+    // Backend bisa kirim format Date object string ("Wed Jun 17 2026 00:00:00 GMT+0800"),
     // ISO datetime ("2024-01-15T00:00:00.000Z"), atau plain "2024-01-15".
     function normalizeDateInput(raw) {
       if (!raw) return '';
@@ -2474,10 +2474,10 @@
     /* ──────────────────────────────────────────────
        ADMIN: LOAD TODAY'S ABSENSI
     ────────────────────────────────────────────── */
-    // Helper: hari ini dalam zona WIB (Asia/Jakarta) dengan format YYYY-MM-DD.
-    function todayWIB() {
-      // toLocaleDateString dengan timeZone Asia/Jakarta menghasilkan "DD/MM/YYYY".
-      const parts = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' });
+    // Helper: hari ini dalam zona WITA (Asia/Makassar) dengan format YYYY-MM-DD.
+    function todayWITA() {
+      // toLocaleDateString dengan timeZone Asia/Makassar menghasilkan "DD/MM/YYYY".
+      const parts = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Makassar' });
       // 'en-CA' menghasilkan langsung "YYYY-MM-DD".
       return parts;
     }
@@ -2494,7 +2494,7 @@
       const toEl   = document.getElementById('absensi-to');
       if (!fromEl || !toEl) return;
       if (!fromEl.value || !toEl.value) {
-        const today = todayWIB();
+        const today = todayWITA();
         fromEl.value = today;
         toEl.value   = today;
       }
@@ -2543,7 +2543,7 @@
     function formatTanggalIndo(yyyymmdd) {
       if (!yyyymmdd) return '';
       try {
-        const d = new Date(yyyymmdd + 'T00:00:00+07:00');
+        const d = new Date(yyyymmdd + 'T00:00:00+08:00');
         return d.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
       } catch (_) { return yyyymmdd; }
     }
@@ -2555,7 +2555,7 @@
     // (View-only — tidak melakukan export, hanya memudahkan admin lihat
     // laporan bulan berjalan tanpa harus klik kalender manual.)
     async function loadLaporanBulanIni() {
-      const today = todayWIB();              // YYYY-MM-DD WIB
+      const today = todayWITA();              // YYYY-MM-DD WITA
       const first = today.substring(0, 8) + '01';
       document.getElementById('absensi-from').value = first;
       document.getElementById('absensi-to').value   = today;
@@ -2707,8 +2707,8 @@
       //     yang di-exclude. Record yang tidak match user mana-mana (orphan,
       //     mungkin format ID berbeda antar sheet) TETAP DIHITUNG supaya
       //     leaderboard tidak hilang gara-gara data inconsistency.
-      const today = todayWIB();
-      const todayDate = new Date(today + 'T00:00:00+07:00');
+      const today = todayWITA();
+      const todayDate = new Date(today + 'T00:00:00+08:00');
       const monthStart =
         `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-01`;
 
@@ -3017,7 +3017,7 @@
         } catch (_) {}
       }
 
-      // Polling tiap 30 detik: kalau jam WIB == 07:55 atau 16:55 → notifikasi
+      // Polling tiap 30 detik: kalau jam WITA == 07:55 atau 16:55 → notifikasi
       if (window._reminderInterval) clearInterval(window._reminderInterval);
       window._reminderInterval = setInterval(checkReminderTime, 30000);
       checkReminderTime();
@@ -3027,7 +3027,7 @@
       if (!('Notification' in window) || Notification.permission !== 'granted') return;
       if (!currentUser || currentUser.role === 'Admin') return;
 
-      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' }));
+      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
       const h = wib.getHours();
       const m = wib.getMinutes();
       const dayKey = `${wib.getFullYear()}-${wib.getMonth()+1}-${wib.getDate()}`;
