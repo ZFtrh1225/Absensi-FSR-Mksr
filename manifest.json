@@ -1,6 +1,6 @@
 {
   "name": "Absensi FSR Makassar",
-  "short_name": "Absensi FSR",
+  "short_name": "Absensi FSR Makassar",
   "description": "Sistem Manajemen Kehadiran Karyawan FSR",
   "start_url": "./index.html",
   "scope": "./",
