@@ -2551,8 +2551,13 @@
     function formatTanggalIndo(yyyymmdd) {
       if (!yyyymmdd) return '';
       try {
+        // Jangan biarkan browser mengubah WITA ke zona lokal device.
+        // Contoh bug: 2026-09-01T00:00:00+08:00 dibaca sebagai 31/08 jika device memakai WIB.
         const d = new Date(yyyymmdd + 'T00:00:00+08:00');
-        return d.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+        return d.toLocaleDateString('id-ID', {
+          timeZone: 'Asia/Makassar',
+          weekday:'long', year:'numeric', month:'long', day:'numeric'
+        });
       } catch (_) { return yyyymmdd; }
     }
 
@@ -3394,9 +3399,8 @@
       //     mungkin format ID berbeda antar sheet) TETAP DIHITUNG supaya
       //     leaderboard tidak hilang gara-gara data inconsistency.
       const today = todayWITA();
-      const todayDate = new Date(today + 'T00:00:00+08:00');
-      const monthStart =
-        `${todayDate.getFullYear()}-${String(todayDate.getMonth() + 1).padStart(2, '0')}-01`;
+      // Ambil awal bulan dari string YYYY-MM-DD agar tidak bergeser saat device memakai WIB.
+      const monthStart = today.substring(0, 8) + '01';
 
       const [usersRes, monthRes] = await Promise.all([
         apiCall({ action: 'getUsers' }).catch(() => ({ users: [] })),
