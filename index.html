@@ -729,7 +729,7 @@
         </label>
         <textarea id="alasan-input" rows="3" class="field field-light"
           style="padding:0.65rem 1rem;resize:vertical;min-height:80px;"
-          placeholder="Contoh: WFH, survey, kunjungan klien..."></textarea>
+          placeholder="Contoh: Survey, WFH, perjalanan dinas, kunjungan klien..."></textarea>
         <p id="alasan-error" style="display:none;color:#ef4444;font-size:0.78rem;margin:0.3rem 0 0;">Alasan tidak boleh kosong.</p>
       </div>
       <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
@@ -1219,7 +1219,7 @@
     /* ──────────────────────────────────────────────
        CONFIG
     ────────────────────────────────────────────── */
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzr96ZJblP-mMIcu_azD1SdkgracSKqYv-hY-WQq2feAlBiXtAGxqYQPb-8h_M7_Ayr/exec'; // <-- Paste your deployed GAS URL here
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzp-8nGOpiWsUJPzn3kOyvPH1691tAPWJ2Z7oRxUzJUUr6h4jqDohDmFr5NQOmJExC6/exec'; // <-- Paste your deployed GAS URL here
 
     // Geofencing config: set your office coordinates & radius (meters)
     const OFFICE_LAT    = -5.183102;  // Latitude kantor
@@ -1292,8 +1292,8 @@
        WEEKEND CHECK HELPER
     ────────────────────────────────────────────── */
     function isTodayWeekend() {
-      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-      return wib.getDay() === 0 || wib.getDay() === 6; // 0 = Minggu, 6 = Sabtu
+      const wita = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+      return wita.getDay() === 0 || wita.getDay() === 6; // 0 = Minggu, 6 = Sabtu
     }
 
     /* ──────────────────────────────────────────────
@@ -2670,7 +2670,6 @@
       renderAbsensiTable();
     }
 
-
     /* ──────────────────────────────────────────────
        REKAP BULANAN — Export Excel (.xls) & PDF
        - Semua karyawan aktif (bukan hanya yang hadir)
@@ -3217,7 +3216,7 @@
   .kpi b { display: block; font-size: 14px; color: #1e1b4b; }
   h2 { font-size: 12px; color: #1e1b4b; margin: 16px 0 6px; border-left: 3px solid #6366f1; padding-left: 8px; }
   table { width: 100%; border-collapse: collapse; }
-  th { background: #312e81; color: #fff; padding: 5px 6px; text-align: left; font-size: 9px; }
+  th { background: #312e81; color: #fff; padding: 5px 4px; text-align: left; font-size: 8px; }
   td { padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9px; }
   tr:nth-child(even) td { background: #f8fafc; }
   .c { text-align: center; }
@@ -3714,10 +3713,10 @@
       if (!('Notification' in window) || Notification.permission !== 'granted') return;
       if (!currentUser || currentUser.role === 'Admin') return;
 
-      const wib = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
-      const h = wib.getHours();
-      const m = wib.getMinutes();
-      const dayKey = `${wib.getFullYear()}-${wib.getMonth()+1}-${wib.getDate()}`;
+      const wita = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+      const h = wita.getHours();
+      const m = wita.getMinutes();
+      const dayKey = `${wita.getFullYear()}-${wita.getMonth()+1}-${wita.getDate()}`;
 
       // Reminder check-in: 07:55 (sekali per hari)
       if (h === 7 && m === 55) {
